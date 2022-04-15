@@ -20,3 +20,24 @@ body {
   border-width: 1px;
   border-color: #000;
 }
+
+.pallette {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  width: 400px;
+  margin: auto;
+}
+
+.activePaint {
+  border-style: solid;
+  border-width: 2px;
+  border-color: yellow;
+  margin: 2px;
+}
+
+.inactivePaint {
+  border-style: groove;
+  border-width: 1px;
+  border-color: black;
+  margin: 2px;
+}

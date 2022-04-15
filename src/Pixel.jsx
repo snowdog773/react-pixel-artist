@@ -5,7 +5,7 @@ const Pixel = (props) => {
     <>
       <div
         className="pixel"
-        style={{ backgroundColor: props.color === 1 ? "black" : "white" }}
+        style={{ backgroundColor: props.color }}
         onClick={() => props.paint(props.pos)}
       ></div>
     </>
