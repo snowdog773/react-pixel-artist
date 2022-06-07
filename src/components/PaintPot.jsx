@@ -8,9 +8,7 @@ const PaintPot = (props) => {
         }
         style={{ backgroundColor: props.color }}
         onClick={() => props.changeColor(props.color)}
-      >
-        a
-      </div>
+      ></div>
     </>
   );
 };

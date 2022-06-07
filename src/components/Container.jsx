@@ -1,5 +1,5 @@
 import React from "react";
-import Pixel from "./Pixel.jsx";
+import Pixel from "./Pixel";
 
 const Container = (props) => {
   return (
