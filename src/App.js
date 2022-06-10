@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import Container from "./components/Container.jsx";
 import Pallette from "./components/Pallette.jsx";
 import LoadSave from "./components/LoadSave.jsx";
@@ -70,13 +71,13 @@ class App extends Component {
   };
 
   submitCreate = () => {
-    console.log(
-      "submitted " +
-        this.state.createUsername +
-        this.state.createPassword +
-        this.state.createPasswordConfirm
-    );
-    this.setState({ createAccountPanel: false });
+    axios
+      .post("http://127.0.0.1:6001/add", {
+        username: this.state.createUsername,
+        password: this.state.createPassword,
+      })
+      .then((res) => console.log(res.data));
+    // this.setState({ createAccountPanel: false });
   };
 
   paint = (position) => {
