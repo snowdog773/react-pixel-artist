@@ -4,6 +4,7 @@ const LoginPanel = (props) => {
       <div className="popup">
         <h3>Login</h3>
         <form className="form">
+          <p className="alert">{props.loginError}</p>
           <label htmlFor="username">Username</label>
           <input
             type="text"

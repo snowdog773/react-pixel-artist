@@ -35,6 +35,10 @@ body {
   border-radius: 10px;
 }
 
+p.alert {
+  color: red;
+}
+
 .form {
   display: flex;
   flex-direction: column;

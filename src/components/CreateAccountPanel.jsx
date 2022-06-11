@@ -4,6 +4,7 @@ const CreateAccountPanel = (props) => {
       <div className="popup">
         <h3>Create Account</h3>
         <form className="form">
+          <p className="alert">{props.createMessage}</p>
           <label htmlFor="username">Username</label>
           <input
             type="text"

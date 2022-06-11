@@ -5,6 +5,7 @@ import Pallette from "./components/Pallette.jsx";
 import LoadSave from "./components/LoadSave.jsx";
 import LoginPanel from "./components/LoginPanel.jsx";
 import CreateAccountPanel from "./components/CreateAccountPanel.jsx";
+import CreateSuccessPanel from "./components/CreateSuccessPanel.jsx";
 import "./styles/style.css";
 
 class App extends Component {
@@ -25,14 +26,18 @@ class App extends Component {
       "brown",
     ],
     activeColor: "black",
-    loggedIn: false,
+    currentUser: "",
+    currentId: null,
     loginPanel: false,
     createAccountPanel: false,
+    createSuccessPanel: false,
     loginUsername: "",
     loginPassword: "",
+    loginError: "",
     createUsername: "",
     createPassword: "",
     createPasswordConfirm: "",
+    createMessage: "",
   };
 
   login = () => {
@@ -48,10 +53,21 @@ class App extends Component {
   };
 
   submitLogin = () => {
-    console.log(
-      "submitted " + this.state.loginUsername + this.state.loginPassword
-    );
-    this.setState({ loginPanel: false });
+    axios
+      .post("http://127.0.0.1:6001/login", {
+        username: this.state.loginUsername,
+        password: this.state.loginPassword,
+      })
+      .then((res) => {
+        res.data.status === 0
+          ? this.setState({ loginError: res.data.error })
+          : this.setState({
+              loginError: "",
+              currentUser: this.state.loginUsername,
+              currentId: res.data.userId,
+              loginPanel: false,
+            });
+      });
   };
 
   createAccount = () => {
@@ -71,13 +87,34 @@ class App extends Component {
   };
 
   submitCreate = () => {
-    axios
-      .post("http://127.0.0.1:6001/add", {
-        username: this.state.createUsername,
-        password: this.state.createPassword,
-      })
-      .then((res) => console.log(res.data));
-    // this.setState({ createAccountPanel: false });
+    this.state.createPassword !== this.state.createPasswordConfirm
+      ? this.setState({
+          createMessage: "passwords do not match, please try again",
+        })
+      : axios
+          .post("http://127.0.0.1:6001/add", {
+            username: this.state.createUsername,
+            password: this.state.createPassword,
+          })
+          .then((res) => {
+            console.log(res);
+            res.data.errno === 1062
+              ? this.setState({
+                  createMessage:
+                    "Sorry but that username is taken, please choose another",
+                })
+              : this.setState({
+                  createMessage: "",
+                  createAccountPanel: false,
+                  createSuccessPanel: true,
+                });
+          });
+  };
+
+  closeWindow = () => this.setState({ createSuccessPanel: false });
+
+  savePicture = () => {
+    console.log(this.state.pixel);
   };
 
   paint = (position) => {
@@ -95,9 +132,10 @@ class App extends Component {
     return (
       <>
         <LoadSave
-          loggedIn={this.state.loggedIn}
+          currentUser={this.state.currentUser}
           login={this.login}
           createAccount={this.createAccount}
+          savePicture={this.savePicture}
         />
         {this.state.createAccountPanel && (
           <CreateAccountPanel
@@ -105,6 +143,7 @@ class App extends Component {
             setCreatePassword={this.setCreatePassword}
             setCreatePasswordConfirm={this.setCreatePasswordConfirm}
             submitCreate={this.submitCreate}
+            createMessage={this.state.createMessage}
           />
         )}
         {this.state.loginPanel && (
@@ -112,10 +151,20 @@ class App extends Component {
             setLoginUsername={this.setLoginUsername}
             setLoginPassword={this.setLoginPassword}
             submitLogin={this.submitLogin}
+            loginError={this.state.loginError}
           />
+        )}
+        {this.state.createSuccessPanel && (
+          <CreateSuccessPanel closeWindow={this.closeWindow} />
         )}
 
         <h1>Pixel Artist</h1>
+
+        {this.state.currentUser ? (
+          <p>Logged in as {this.state.currentUser}</p>
+        ) : (
+          <p>Not logged in</p>
+        )}
 
         <Container pixel={this.state.pixel} paint={this.paint} />
 
