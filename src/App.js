@@ -4,6 +4,7 @@ import Container from "./components/Container.jsx";
 import Pallette from "./components/Pallette.jsx";
 import LoadSave from "./components/LoadSave.jsx";
 import LoginPanel from "./components/LoginPanel.jsx";
+import SavePanel from "./components/SavePanel.jsx";
 import CreateAccountPanel from "./components/CreateAccountPanel.jsx";
 import CreateSuccessPanel from "./components/CreateSuccessPanel.jsx";
 import "./styles/style.css";
@@ -28,12 +29,16 @@ class App extends Component {
     activeColor: "black",
     currentUser: "",
     currentId: null,
+
+    savePanel: false,
+    saveName: "",
+    loadPanel: false,
     loginPanel: false,
-    createAccountPanel: false,
-    createSuccessPanel: false,
     loginUsername: "",
     loginPassword: "",
     loginError: "",
+    createAccountPanel: false,
+    createSuccessPanel: false,
     createUsername: "",
     createPassword: "",
     createPasswordConfirm: "",
@@ -113,8 +118,22 @@ class App extends Component {
 
   closeWindow = () => this.setState({ createSuccessPanel: false });
 
+  openSavePanel = () => this.setState({ savePanel: true });
+
+  setSaveName = (input) => this.setState({ saveName: input });
+
   savePicture = () => {
-    console.log(this.state.pixel);
+    const picture = [...this.state.pixel].join(" ");
+    axios
+      .post("http://127.0.0.1:6001/savePicture", {
+        userId: this.state.currentId,
+        pictureName: this.state.saveName,
+        pictureData: picture,
+      })
+      .then((res) => {
+        alert("saved");
+      });
+    this.setState({ savePanel: false });
   };
 
   paint = (position) => {
@@ -135,7 +154,7 @@ class App extends Component {
           currentUser={this.state.currentUser}
           login={this.login}
           createAccount={this.createAccount}
-          savePicture={this.savePicture}
+          openSavePanel={this.openSavePanel}
         />
         {this.state.createAccountPanel && (
           <CreateAccountPanel
@@ -152,6 +171,12 @@ class App extends Component {
             setLoginPassword={this.setLoginPassword}
             submitLogin={this.submitLogin}
             loginError={this.state.loginError}
+          />
+        )}
+        {this.state.savePanel && (
+          <SavePanel
+            savePicture={this.savePicture}
+            setSaveName={this.setSaveName}
           />
         )}
         {this.state.createSuccessPanel && (

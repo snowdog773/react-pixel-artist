@@ -7,7 +7,7 @@ class LoadSave extends Component {
     return (
       <div className="topBar">
         {this.props.currentUser ? (
-          <ControlPanel savePicture={this.props.savePicture} />
+          <ControlPanel openSavePanel={this.props.openSavePanel} />
         ) : (
           <LogIn
             login={this.props.login}
