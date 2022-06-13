@@ -5,6 +5,7 @@ import Pallette from "./components/Pallette.jsx";
 import LoadSave from "./components/LoadSave.jsx";
 import LoginPanel from "./components/LoginPanel.jsx";
 import SavePanel from "./components/SavePanel.jsx";
+import LoadPanel from "./components/LoadPanel.jsx";
 import CreateAccountPanel from "./components/CreateAccountPanel.jsx";
 import CreateSuccessPanel from "./components/CreateSuccessPanel.jsx";
 import "./styles/style.css";
@@ -33,6 +34,7 @@ class App extends Component {
     savePanel: false,
     saveName: "",
     loadPanel: false,
+    loadList: "testing text",
     loginPanel: false,
     loginUsername: "",
     loginPassword: "",
@@ -120,6 +122,17 @@ class App extends Component {
 
   openSavePanel = () => this.setState({ savePanel: true });
 
+  openLoadPanel = () => {
+    axios
+      .post("http://127.0.0.1:6001/loadPicture", {
+        userId: 106,
+      })
+      .then((res) => {
+        console.log(res);
+      });
+    this.setState({ loadPanel: true });
+  };
+
   setSaveName = (input) => this.setState({ saveName: input });
 
   savePicture = () => {
@@ -155,6 +168,7 @@ class App extends Component {
           login={this.login}
           createAccount={this.createAccount}
           openSavePanel={this.openSavePanel}
+          openLoadPanel={this.openLoadPanel}
         />
         {this.state.createAccountPanel && (
           <CreateAccountPanel
@@ -179,6 +193,8 @@ class App extends Component {
             setSaveName={this.setSaveName}
           />
         )}
+
+        {this.state.loadPanel && <LoadPanel loadList={this.state.loadList} />}
         {this.state.createSuccessPanel && (
           <CreateSuccessPanel closeWindow={this.closeWindow} />
         )}

@@ -7,7 +7,10 @@ class LoadSave extends Component {
     return (
       <div className="topBar">
         {this.props.currentUser ? (
-          <ControlPanel openSavePanel={this.props.openSavePanel} />
+          <ControlPanel
+            openSavePanel={this.props.openSavePanel}
+            openLoadPanel={this.props.openLoadPanel}
+          />
         ) : (
           <LogIn
             login={this.props.login}
