@@ -96,3 +96,7 @@ p.alert {
   width: 30px;
   height: 30px;
 }
+
+p.loadListItem {
+  color: #fff;
+}

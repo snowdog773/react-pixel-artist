@@ -1,11 +1,21 @@
 import React from "react";
+import LoadListItem from "./LoadListItem";
 
 const LoadPanel = (props) => {
   return (
     <div className="popupOuter">
       <div className="popup">
         <h3>Load</h3>
-        <p className="alert">abc {props.loadList}</p>
+
+        {props.loadList.map((e, i) => {
+          return (
+            <LoadListItem
+              listItem={e.Name}
+              key={i}
+              returnImage={props.returnImage}
+            />
+          );
+        })}
       </div>
     </div>
   );

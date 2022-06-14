@@ -34,7 +34,7 @@ class App extends Component {
     savePanel: false,
     saveName: "",
     loadPanel: false,
-    loadList: "testing text",
+    loadList: "",
     loginPanel: false,
     loginUsername: "",
     loginPassword: "",
@@ -122,17 +122,6 @@ class App extends Component {
 
   openSavePanel = () => this.setState({ savePanel: true });
 
-  openLoadPanel = () => {
-    axios
-      .post("http://127.0.0.1:6001/loadPicture", {
-        userId: 106,
-      })
-      .then((res) => {
-        console.log(res);
-      });
-    this.setState({ loadPanel: true });
-  };
-
   setSaveName = (input) => this.setState({ saveName: input });
 
   savePicture = () => {
@@ -147,6 +136,28 @@ class App extends Component {
         alert("saved");
       });
     this.setState({ savePanel: false });
+  };
+
+  openLoadPanel = () => {
+    axios
+      .post("http://127.0.0.1:6001/loadPicture", {
+        userId: this.state.currentId,
+      })
+      .then((res) => {
+        this.setState({ loadPanel: true, loadList: res.data });
+      });
+  };
+
+  returnImage = (name) => {
+    axios
+      .post("http://127.0.0.1:6001/returnImage", {
+        name,
+        userId: this.state.currentId,
+      })
+      .then((res) => {
+        const newData = res.data.results[0].Data.split(" ");
+        this.setState({ pixel: newData, loadPanel: false });
+      });
   };
 
   paint = (position) => {
@@ -194,7 +205,12 @@ class App extends Component {
           />
         )}
 
-        {this.state.loadPanel && <LoadPanel loadList={this.state.loadList} />}
+        {this.state.loadPanel && (
+          <LoadPanel
+            loadList={this.state.loadList}
+            returnImage={this.returnImage}
+          />
+        )}
         {this.state.createSuccessPanel && (
           <CreateSuccessPanel closeWindow={this.closeWindow} />
         )}
