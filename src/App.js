@@ -125,12 +125,14 @@ class App extends Component {
   setSaveName = (input) => this.setState({ saveName: input });
 
   savePicture = () => {
-    const picture = [...this.state.pixel].join(" ");
+    const picture = [...this.state.pixel];
+    const numbers = picture.map((e) => this.state.colors.indexOf(e));
+    numbers.join(" ");
     axios
       .post("http://127.0.0.1:6001/savePicture", {
         userId: this.state.currentId,
         pictureName: this.state.saveName,
-        pictureData: picture,
+        pictureData: numbers,
       })
       .then((res) => {
         alert("saved");
@@ -155,7 +157,8 @@ class App extends Component {
         userId: this.state.currentId,
       })
       .then((res) => {
-        const newData = res.data.results[0].Data.split(" ");
+        const newNumbers = res.data.results[0].Data.split(",");
+        const newData = newNumbers.map((e) => this.state.colors[e]);
         this.setState({ pixel: newData, loadPanel: false });
       });
   };
