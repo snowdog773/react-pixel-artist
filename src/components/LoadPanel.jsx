@@ -10,7 +10,7 @@ const LoadPanel = (props) => {
         {props.loadList.map((e, i) => {
           return (
             <LoadListItem
-              listItem={e.Name}
+              listItem={e}
               key={i}
               returnImage={props.returnImage}
             />

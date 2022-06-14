@@ -34,7 +34,7 @@ class App extends Component {
     savePanel: false,
     saveName: "",
     loadPanel: false,
-    loadList: "",
+    loadList: [],
     loginPanel: false,
     loginUsername: "",
     loginPassword: "",
@@ -72,6 +72,7 @@ class App extends Component {
               loginError: "",
               currentUser: this.state.loginUsername,
               currentId: res.data.userId,
+              loadList: res.data.name,
               loginPanel: false,
             });
       });
@@ -114,6 +115,8 @@ class App extends Component {
                   createMessage: "",
                   createAccountPanel: false,
                   createSuccessPanel: true,
+                  currentUser: this.state.createUsername,
+                  currentId: res.data.insertId,
                 });
           });
   };
@@ -141,13 +144,7 @@ class App extends Component {
   };
 
   openLoadPanel = () => {
-    axios
-      .post("http://127.0.0.1:6001/loadPicture", {
-        userId: this.state.currentId,
-      })
-      .then((res) => {
-        this.setState({ loadPanel: true, loadList: res.data });
-      });
+    this.setState({ loadPanel: true });
   };
 
   returnImage = (name) => {
@@ -177,6 +174,7 @@ class App extends Component {
   render() {
     return (
       <>
+        <p>{this.state.currentId}</p>
         <LoadSave
           currentUser={this.state.currentUser}
           login={this.login}
