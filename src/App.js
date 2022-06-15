@@ -7,6 +7,7 @@ import LoginPanel from "./components/LoginPanel.jsx";
 import SavePanel from "./components/SavePanel.jsx";
 import OverwritePanel from "./components/OverwritePanel.jsx";
 import LoadPanel from "./components/LoadPanel.jsx";
+import DeletePanel from "./components/DeletePanel.jsx";
 import CreateAccountPanel from "./components/CreateAccountPanel.jsx";
 import CreateSuccessPanel from "./components/CreateSuccessPanel.jsx";
 import "./styles/style.css";
@@ -37,6 +38,8 @@ class App extends Component {
     overwritePanel: false,
     loadPanel: false,
     loadList: [],
+    deleteWindow: false,
+    toBeDeleted: "",
     loginPanel: false,
     loginUsername: "",
     loginPassword: "",
@@ -143,14 +146,15 @@ class App extends Component {
           })
           .then((res) => {
             alert("saved");
+
+            const newLoadList = [...this.state.loadList];
+            newLoadList.push(this.state.saveName);
+            this.setState({
+              savePanel: false,
+              currentImageName: this.state.saveName,
+              loadList: newLoadList,
+            });
           });
-    const newLoadList = [...this.state.loadList];
-    newLoadList.push(this.state.saveName);
-    this.setState({
-      savePanel: false,
-      currentImageName: this.state.saveName,
-      loadList: newLoadList,
-    });
   };
 
   overwritePicture = () => {
@@ -192,6 +196,29 @@ class App extends Component {
           currentImageName: name,
         });
       });
+  };
+
+  deleteWindow = (name) => {
+    this.setState({ deleteWindow: true, toBeDeleted: name });
+  };
+
+  closeDeleteWindow = () => {
+    this.setState({ deleteWindow: false, toBeDeleted: "" });
+  };
+
+  deletePicture = () => {
+    axios
+      .post(`http://127.0.0.1:6001/deletePicture`, {
+        userId: this.state.currentId,
+        pictureName: this.state.toBeDeleted,
+      })
+      .then((res) => {
+        alert("deleted");
+      });
+    const newList = [...this.state.loadList];
+    const index = newList.indexOf(this.state.toBeDeleted);
+    newList.splice(index, 1);
+    this.setState({ deleteWindow: false, loadList: newList });
   };
 
   paint = (position) => {
@@ -250,12 +277,24 @@ class App extends Component {
           <LoadPanel
             loadList={this.state.loadList}
             returnImage={this.returnImage}
+            deleteWindow={this.deleteWindow}
+          />
+        )}
+
+        {this.state.deleteWindow && (
+          <DeletePanel
+            deletePicture={this.deletePicture}
+            closeDeleteWindow={this.closeDeleteWindow}
+            toBeDeleted={this.state.toBeDeleted}
           />
         )}
         {this.state.createSuccessPanel && (
           <CreateSuccessPanel closeWindow={this.closeWindow} />
         )}
-
+        <p>
+          {this.state.deleteWindow}
+          {this.state.toBeDeleted}
+        </p>
         <h1>Pixel Artist</h1>
 
         {this.state.currentUser ? (

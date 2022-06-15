@@ -104,3 +104,7 @@ p.loadListItem {
 div.overwrite {
   z-index: 1;
 }
+
+.deleteButton {
+  color: #fff;
+}

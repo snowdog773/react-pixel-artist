@@ -13,6 +13,7 @@ const LoadPanel = (props) => {
               listItem={e}
               key={i}
               returnImage={props.returnImage}
+              deleteWindow={props.deleteWindow}
             />
           );
         })}
