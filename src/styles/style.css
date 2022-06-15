@@ -100,3 +100,7 @@ p.alert {
 p.loadListItem {
   color: #fff;
 }
+
+div.overwrite {
+  z-index: 1;
+}

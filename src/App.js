@@ -5,6 +5,7 @@ import Pallette from "./components/Pallette.jsx";
 import LoadSave from "./components/LoadSave.jsx";
 import LoginPanel from "./components/LoginPanel.jsx";
 import SavePanel from "./components/SavePanel.jsx";
+import OverwritePanel from "./components/OverwritePanel.jsx";
 import LoadPanel from "./components/LoadPanel.jsx";
 import CreateAccountPanel from "./components/CreateAccountPanel.jsx";
 import CreateSuccessPanel from "./components/CreateSuccessPanel.jsx";
@@ -30,9 +31,10 @@ class App extends Component {
     activeColor: "black",
     currentUser: "",
     currentId: null,
-
+    currentImageName: "",
     savePanel: false,
     saveName: "",
+    overwritePanel: false,
     loadPanel: false,
     loadList: [],
     loginPanel: false,
@@ -131,8 +133,32 @@ class App extends Component {
     const picture = [...this.state.pixel];
     const numbers = picture.map((e) => this.state.colors.indexOf(e));
     numbers.join(" ");
+    this.state.loadList.includes(this.state.saveName)
+      ? this.setState({ overwritePanel: true })
+      : axios
+          .post(`http://127.0.0.1:6001/savePicture`, {
+            userId: this.state.currentId,
+            pictureName: this.state.saveName,
+            pictureData: numbers,
+          })
+          .then((res) => {
+            alert("saved");
+          });
+    const newLoadList = [...this.state.loadList];
+    newLoadList.push(this.state.saveName);
+    this.setState({
+      savePanel: false,
+      currentImageName: this.state.saveName,
+      loadList: newLoadList,
+    });
+  };
+
+  overwritePicture = () => {
+    const picture = [...this.state.pixel];
+    const numbers = picture.map((e) => this.state.colors.indexOf(e));
+    numbers.join(" ");
     axios
-      .post("http://127.0.0.1:6001/savePicture", {
+      .post(`http://127.0.0.1:6001/updatePicture`, {
         userId: this.state.currentId,
         pictureName: this.state.saveName,
         pictureData: numbers,
@@ -140,7 +166,11 @@ class App extends Component {
       .then((res) => {
         alert("saved");
       });
-    this.setState({ savePanel: false });
+    this.setState({ savePanel: false, overwritePanel: false });
+  };
+
+  closeOverwriteWindow = () => {
+    this.setState({ overwritePanel: false, savePanel: true });
   };
 
   openLoadPanel = () => {
@@ -156,7 +186,11 @@ class App extends Component {
       .then((res) => {
         const newNumbers = res.data.results[0].Data.split(",");
         const newData = newNumbers.map((e) => this.state.colors[e]);
-        this.setState({ pixel: newData, loadPanel: false });
+        this.setState({
+          pixel: newData,
+          loadPanel: false,
+          currentImageName: name,
+        });
       });
   };
 
@@ -174,7 +208,6 @@ class App extends Component {
   render() {
     return (
       <>
-        <p>{this.state.currentId}</p>
         <LoadSave
           currentUser={this.state.currentUser}
           login={this.login}
@@ -206,6 +239,13 @@ class App extends Component {
           />
         )}
 
+        {this.state.overwritePanel && (
+          <OverwritePanel
+            overwritePicture={this.overwritePicture}
+            closeOverwriteWindow={this.closeOverwriteWindow}
+          />
+        )}
+
         {this.state.loadPanel && (
           <LoadPanel
             loadList={this.state.loadList}
@@ -225,7 +265,7 @@ class App extends Component {
         )}
 
         <Container pixel={this.state.pixel} paint={this.paint} />
-
+        <p>{this.state.currentImageName}</p>
         <Pallette
           colors={this.state.colors}
           changeColor={this.changeColor}
