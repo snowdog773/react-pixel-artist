@@ -3,6 +3,11 @@ const SavePanel = (props) => {
   return (
     <div className="popupOuter">
       <div className="popup">
+        <div className="closeButtonWrapper">
+          <div className="closeButton" onClick={props.closeWindow}>
+            X
+          </div>
+        </div>
         <h3>Save</h3>
         <form className="form">
           <label htmlFor="saveName">Name Your Masterpiece</label>
@@ -13,7 +18,12 @@ const SavePanel = (props) => {
             onChange={(e) => props.setSaveName(e.target.value)}
           ></input>
         </form>
-        <button onClick={props.savePicture}>Submit</button>;
+        <button
+          onClick={props.savePicture}
+          disabled={props.saveName ? "" : "true"}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );

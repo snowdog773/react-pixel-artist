@@ -126,7 +126,14 @@ class App extends Component {
           });
   };
 
-  closeWindow = () => this.setState({ createSuccessPanel: false });
+  closeWindow = () =>
+    this.setState({
+      createSuccessPanel: false,
+      createAccountPanel: false,
+      loadPanel: false,
+      loginPanel: false,
+      savePanel: false,
+    });
 
   openSavePanel = () => this.setState({ savePanel: true });
 
@@ -249,6 +256,7 @@ class App extends Component {
             setCreatePasswordConfirm={this.setCreatePasswordConfirm}
             submitCreate={this.submitCreate}
             createMessage={this.state.createMessage}
+            closeWindow={this.closeWindow}
           />
         )}
         {this.state.loginPanel && (
@@ -257,12 +265,15 @@ class App extends Component {
             setLoginPassword={this.setLoginPassword}
             submitLogin={this.submitLogin}
             loginError={this.state.loginError}
+            closeWindow={this.closeWindow}
           />
         )}
         {this.state.savePanel && (
           <SavePanel
             savePicture={this.savePicture}
             setSaveName={this.setSaveName}
+            closeWindow={this.closeWindow}
+            saveName={this.state.saveName}
           />
         )}
 
@@ -278,6 +289,7 @@ class App extends Component {
             loadList={this.state.loadList}
             returnImage={this.returnImage}
             deleteWindow={this.deleteWindow}
+            closeWindow={this.closeWindow}
           />
         )}
 
@@ -291,10 +303,7 @@ class App extends Component {
         {this.state.createSuccessPanel && (
           <CreateSuccessPanel closeWindow={this.closeWindow} />
         )}
-        <p>
-          {this.state.deleteWindow}
-          {this.state.toBeDeleted}
-        </p>
+
         <h1>Pixel Artist</h1>
 
         {this.state.currentUser ? (

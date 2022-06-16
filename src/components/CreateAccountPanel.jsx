@@ -2,6 +2,11 @@ const CreateAccountPanel = (props) => {
   return (
     <div className="popupOuter">
       <div className="popup">
+        <div className="closeButtonWrapper">
+          <div className="closeButton" onClick={props.closeWindow}>
+            X
+          </div>
+        </div>
         <h3>Create Account</h3>
         <form className="form">
           <p className="alert">{props.createMessage}</p>

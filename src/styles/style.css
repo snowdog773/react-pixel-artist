@@ -31,8 +31,16 @@ body {
   display: block;
   margin: 80px auto;
   width: 80%;
+  min-height: 200px;
   background: #000;
   border-radius: 10px;
+  border-style: groove;
+  border-color: #ccc;
+  border-width: 2px;
+}
+
+.popup h3 {
+  margin: 0;
 }
 
 p.alert {
@@ -106,5 +114,19 @@ div.overwrite {
 }
 
 .deleteButton {
+  color: #fff;
+}
+
+div.closeButtonWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #0000;
+}
+
+div.closeButton {
+  background-color: #0000;
+  width: 5%;
+  padding: 2px 5px;
   color: #fff;
 }

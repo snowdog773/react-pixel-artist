@@ -5,6 +5,11 @@ const LoadPanel = (props) => {
   return (
     <div className="popupOuter">
       <div className="popup">
+        <div className="closeButtonWrapper">
+          <div className="closeButton" onClick={props.closeWindow}>
+            X
+          </div>
+        </div>
         <h3>Load</h3>
 
         {props.loadList.map((e, i) => {
