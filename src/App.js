@@ -35,6 +35,7 @@ class App extends Component {
     currentImageName: "",
     savePanel: false,
     saveName: "",
+    savePlaceholder: "",
     overwritePanel: false,
     loadPanel: false,
     loadList: [],
@@ -137,7 +138,8 @@ class App extends Component {
 
   openSavePanel = () => this.setState({ savePanel: true });
 
-  setSaveName = (input) => this.setState({ saveName: input });
+  setSaveName = (input) =>
+    this.setState({ saveName: input, savePlaceholder: input });
 
   savePicture = () => {
     const picture = [...this.state.pixel];
@@ -145,38 +147,32 @@ class App extends Component {
     numbers.join(" ");
     this.state.loadList.includes(this.state.saveName)
       ? this.setState({ overwritePanel: true })
-      : axios
-          .post(`http://127.0.0.1:6001/savePicture`, {
-            userId: this.state.currentId,
-            pictureName: this.state.saveName,
-            pictureData: numbers,
-          })
-          .then((res) => {
-            alert("saved");
+      : axios.post(`http://127.0.0.1:6001/savePicture`, {
+          userId: this.state.currentId,
+          pictureName: this.state.saveName,
+          pictureData: numbers,
+        });
 
-            const newLoadList = [...this.state.loadList];
-            newLoadList.push(this.state.saveName);
-            this.setState({
-              savePanel: false,
-              currentImageName: this.state.saveName,
-              loadList: newLoadList,
-            });
-          });
+    const newLoadList = [...this.state.loadList];
+    newLoadList.push(this.state.saveName);
+    this.setState({
+      savePanel: false,
+      currentImageName: this.state.saveName,
+      savePlaceholder: this.state.saveName,
+      loadList: newLoadList,
+    });
   };
 
   overwritePicture = () => {
     const picture = [...this.state.pixel];
     const numbers = picture.map((e) => this.state.colors.indexOf(e));
     numbers.join(" ");
-    axios
-      .post(`http://127.0.0.1:6001/updatePicture`, {
-        userId: this.state.currentId,
-        pictureName: this.state.saveName,
-        pictureData: numbers,
-      })
-      .then((res) => {
-        alert("saved");
-      });
+    axios.post(`http://127.0.0.1:6001/updatePicture`, {
+      userId: this.state.currentId,
+      pictureName: this.state.saveName,
+      pictureData: numbers,
+    });
+
     this.setState({ savePanel: false, overwritePanel: false });
   };
 
@@ -201,6 +197,7 @@ class App extends Component {
           pixel: newData,
           loadPanel: false,
           currentImageName: name,
+          savePlaceholder: name,
         });
       });
   };
@@ -214,14 +211,11 @@ class App extends Component {
   };
 
   deletePicture = () => {
-    axios
-      .post(`http://127.0.0.1:6001/deletePicture`, {
-        userId: this.state.currentId,
-        pictureName: this.state.toBeDeleted,
-      })
-      .then((res) => {
-        alert("deleted");
-      });
+    axios.post(`http://127.0.0.1:6001/deletePicture`, {
+      userId: this.state.currentId,
+      pictureName: this.state.toBeDeleted,
+    });
+
     const newList = [...this.state.loadList];
     const index = newList.indexOf(this.state.toBeDeleted);
     newList.splice(index, 1);
@@ -274,6 +268,8 @@ class App extends Component {
             setSaveName={this.setSaveName}
             closeWindow={this.closeWindow}
             saveName={this.state.saveName}
+            savePlaceholder={this.state.savePlaceholder}
+            currentImageName={this.state.currentImageName}
           />
         )}
 

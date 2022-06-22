@@ -30,9 +30,11 @@ body {
 .popup {
   display: block;
   margin: 80px auto;
+  padding-bottom: 20px;
   width: 80%;
   min-height: 200px;
   background: #000;
+  color: #fff;
   border-radius: 10px;
   border-style: groove;
   border-color: #ccc;
@@ -105,16 +107,26 @@ p.alert {
   height: 30px;
 }
 
-p.loadListItem {
+div.loadListItem {
   color: #fff;
+  background: #222;
+  width: 80%;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  border-color: #ccc;
+  margin: 5px auto;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.deleteButton img {
+  height: 18px;
 }
 
 div.overwrite {
   z-index: 1;
-}
-
-.deleteButton {
-  color: #fff;
 }
 
 div.closeButtonWrapper {

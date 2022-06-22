@@ -16,6 +16,8 @@ const SavePanel = (props) => {
             name="saveName"
             id="saveName"
             onChange={(e) => props.setSaveName(e.target.value)}
+            value={props.savePlaceholder}
+            maxLength="20"
           ></input>
         </form>
         <button

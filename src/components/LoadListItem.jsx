@@ -2,13 +2,10 @@ import React from "react";
 const LoadListItem = (props) => {
   return (
     <>
-      <div>
-        <span
-          className="loadListItem"
-          onClick={() => props.returnImage(props.listItem)}
-        >
+      <div className="loadListItem">
+        <div onClick={() => props.returnImage(props.listItem)}>
           {props.listItem}
-        </span>
+        </div>
         <div
           className="deleteButton"
           onClick={() => props.deleteWindow(props.listItem)}
