@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import Container from "./components/Container.jsx";
 import Pallette from "./components/Pallette.jsx";
-import LoadSave from "./components/LoadSave.jsx";
+import Header from "./components/Header.jsx";
 import LoginPanel from "./components/LoginPanel.jsx";
 import SavePanel from "./components/SavePanel.jsx";
 import OverwritePanel from "./components/OverwritePanel.jsx";
@@ -10,6 +10,12 @@ import LoadPanel from "./components/LoadPanel.jsx";
 import DeletePanel from "./components/DeletePanel.jsx";
 import CreateAccountPanel from "./components/CreateAccountPanel.jsx";
 import CreateSuccessPanel from "./components/CreateSuccessPanel.jsx";
+import Gallery from "./components/Gallery.jsx";
+import AboutPanel from "./components/AboutPanel.jsx";
+import LogoutPanel from "./components/LogoutPanel.jsx";
+
+import { URL } from "./utils/constants";
+
 import "./styles/style.css";
 
 class App extends Component {
@@ -30,6 +36,7 @@ class App extends Component {
       "brown",
     ],
     activeColor: "black",
+    mouseActive: false,
     currentUser: "",
     currentId: null,
     currentImageName: "",
@@ -42,6 +49,8 @@ class App extends Component {
     deleteWindow: false,
     toBeDeleted: "",
     loginPanel: false,
+    logoutPanel: false,
+    aboutPanel: false,
     loginUsername: "",
     loginPassword: "",
     loginError: "",
@@ -51,6 +60,7 @@ class App extends Component {
     createPassword: "",
     createPasswordConfirm: "",
     createMessage: "",
+    galleryView: false,
   };
 
   login = () => {
@@ -67,7 +77,7 @@ class App extends Component {
 
   submitLogin = () => {
     axios
-      .post("http://127.0.0.1:6001/login", {
+      .post(`${URL}login`, {
         username: this.state.loginUsername,
         password: this.state.loginPassword,
       })
@@ -106,7 +116,7 @@ class App extends Component {
           createMessage: "passwords do not match, please try again",
         })
       : axios
-          .post("http://127.0.0.1:6001/add", {
+          .post(`${URL}add`, {
             username: this.state.createUsername,
             password: this.state.createPassword,
           })
@@ -147,7 +157,7 @@ class App extends Component {
     numbers.join(" ");
     this.state.loadList.includes(this.state.saveName)
       ? this.setState({ overwritePanel: true })
-      : axios.post(`http://127.0.0.1:6001/savePicture`, {
+      : axios.post(`${URL}savePicture`, {
           userId: this.state.currentId,
           pictureName: this.state.saveName,
           pictureData: numbers,
@@ -167,7 +177,7 @@ class App extends Component {
     const picture = [...this.state.pixel];
     const numbers = picture.map((e) => this.state.colors.indexOf(e));
     numbers.join(" ");
-    axios.post(`http://127.0.0.1:6001/updatePicture`, {
+    axios.post(`${URL}updatePicture`, {
       userId: this.state.currentId,
       pictureName: this.state.saveName,
       pictureData: numbers,
@@ -186,7 +196,7 @@ class App extends Component {
 
   returnImage = (name) => {
     axios
-      .post("http://127.0.0.1:6001/returnImage", {
+      .post(`${URL}returnImage`, {
         name,
         userId: this.state.currentId,
       })
@@ -196,6 +206,7 @@ class App extends Component {
         this.setState({
           pixel: newData,
           loadPanel: false,
+          galleryView: false,
           currentImageName: name,
           savePlaceholder: name,
         });
@@ -211,7 +222,7 @@ class App extends Component {
   };
 
   deletePicture = () => {
-    axios.post(`http://127.0.0.1:6001/deletePicture`, {
+    axios.post(`${URL}deletePicture`, {
       userId: this.state.currentId,
       pictureName: this.state.toBeDeleted,
     });
@@ -222,10 +233,39 @@ class App extends Component {
     this.setState({ deleteWindow: false, loadList: newList });
   };
 
+  galleryView = () => {
+    this.setState({ galleryView: true });
+  };
+  pictureView = () => {
+    this.setState({ galleryView: false });
+  };
+
+  aboutPanel = () => {
+    this.state.aboutPanel
+      ? this.setState({ aboutPanel: false })
+      : this.setState({ aboutPanel: true });
+  };
+
+  logoutPanel = () => {
+    this.state.logoutPanel
+      ? this.setState({ logoutPanel: false })
+      : this.setState({ logoutPanel: true });
+  };
+
+  logout = () => {
+    this.setState({
+      currentUser: "",
+      currentId: null,
+      currentImageName: "",
+      pixel: new Array(400).fill("white"),
+      logoutPanel: false,
+    });
+  };
+
   paint = (position) => {
     const newPixel = [...this.state.pixel];
     newPixel[position] = this.state.activeColor;
-    this.setState({ pixel: newPixel });
+    /* this.state.mouseActive && */ this.setState({ pixel: newPixel });
     localStorage.setItem("current", JSON.stringify(this.state.pixel));
   };
 
@@ -233,16 +273,50 @@ class App extends Component {
     this.setState({ activeColor: color });
   };
 
+  // mouseClicked = () => this.setState({ mouseActive: true });
+  // mouseReleased = () => this.setState({ mouseActive: false });
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
   render() {
     return (
       <>
-        <LoadSave
+        <Header
           currentUser={this.state.currentUser}
           login={this.login}
           createAccount={this.createAccount}
           openSavePanel={this.openSavePanel}
           openLoadPanel={this.openLoadPanel}
+          galleryView={this.galleryView}
+          pictureView={this.pictureView}
+          aboutPanel={this.aboutPanel}
+          logoutPanel={this.logoutPanel}
         />
+        {this.state.galleryView ? (
+          <Gallery />
+        ) : (
+          <div className="containerWrapper">
+            <Container
+              pixel={this.state.pixel}
+              paint={this.paint}
+              mouseClicked={this.mouseClicked}
+              mouseReleased={this.mouseReleased}
+            />
+            <p>{this.state.currentImageName}</p>
+            <Pallette
+              colors={this.state.colors}
+              changeColor={this.changeColor}
+              activeColor={this.state.activeColor}
+            />
+          </div>
+        )}
+
+        {this.state.currentUser ? (
+          <p>Logged in as {this.state.currentUser}</p>
+        ) : (
+          <p>Not logged in</p>
+        )}
         {this.state.createAccountPanel && (
           <CreateAccountPanel
             setCreateUsername={this.setCreateUsername}
@@ -299,22 +373,10 @@ class App extends Component {
         {this.state.createSuccessPanel && (
           <CreateSuccessPanel closeWindow={this.closeWindow} />
         )}
-
-        <h1>Pixel Artist</h1>
-
-        {this.state.currentUser ? (
-          <p>Logged in as {this.state.currentUser}</p>
-        ) : (
-          <p>Not logged in</p>
+        {this.state.aboutPanel && <AboutPanel aboutPanel={this.aboutPanel} />}
+        {this.state.logoutPanel && (
+          <LogoutPanel logoutPanel={this.logoutPanel} logout={this.logout} />
         )}
-
-        <Container pixel={this.state.pixel} paint={this.paint} />
-        <p>{this.state.currentImageName}</p>
-        <Pallette
-          colors={this.state.colors}
-          changeColor={this.changeColor}
-          activeColor={this.state.activeColor}
-        />
       </>
     );
   }

@@ -1,15 +1,21 @@
-import React from "react";
+import React, { Component } from "react";
+class Pixel extends Component {
+  state = {};
 
-const Pixel = (props) => {
-  return (
-    <>
+  render() {
+    return (
       <div
         className="pixel"
-        style={{ backgroundColor: props.color }}
-        onClick={() => props.paint(props.pos)}
+        style={{ backgroundColor: this.props.color }}
+        onClick={() => this.props.paint(this.props.pos)}
+        // onTouchStart={() => this.props.paint(this.props.pos)}
+        // onMouseDown={this.props.mouseClicked}
+        // onMouseUp={this.props.mouseReleased}
+        // // onTouchStart={this.props.mouseClicked}
+        // onTouchEnd={this.props.mouseReleased}
       ></div>
-    </>
-  );
-};
+    );
+  }
+}
 
 export default Pixel;
