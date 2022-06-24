@@ -139,8 +139,9 @@ p.alert {
 }
 
 .containerWrapper {
-  background-color: #222;
-  background-image: linear-gradient(
+  background-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px #000;
+  /* background-image: linear-gradient(
       to top left,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0.5) 100%
@@ -149,13 +150,13 @@ p.alert {
       to bottom right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0.2) 100%
-    );
+    ); */
   display: block;
   margin: 20px auto;
   padding: 20px;
   width: 240px;
   border-radius: 20px;
-  border: 2px solid #666;
+  border: 1px solid #000;
 }
 
 .container {
@@ -238,4 +239,52 @@ div.closeButton {
   width: 5%;
   padding: 2px 5px;
   color: #fff;
+}
+
+.galleryWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  width: 90%;
+  margin: 0 auto;
+  padding: 0;
+  justify-content: center;
+}
+
+li.thumbnailWrapper {
+  list-style: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  width: 150px;
+}
+
+li.thumbnailWrapper h4 {
+  font-size: 0.8rem;
+  margin: 5px;
+}
+
+li.thumbnailWrapper span {
+  text-decoration: underline;
+}
+
+li.thumbnailWrapper p {
+  margin: 5px;
+  font-size: 0.7rem;
+}
+
+.thumbnailImageWrapper {
+  display: grid;
+  grid-template-columns: repeat(20, 5px);
+  width: 100px;
+
+  margin: 0 auto;
+}
+
+.thumbnailPixel {
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 0;
+  padding: 0;
 }

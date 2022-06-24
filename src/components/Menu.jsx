@@ -70,8 +70,9 @@ class Menu extends Component {
                 this.setState({ menuOpen: false });
               }}
             >
-              DRAW PICTURE
+              PICTURE EDITOR
             </li>
+
             <li
               onClick={() => {
                 this.props.galleryView();
@@ -80,6 +81,7 @@ class Menu extends Component {
             >
               GALLERY
             </li>
+
             <li
               onClick={() => {
                 this.props.aboutPanel();

@@ -61,6 +61,8 @@ class App extends Component {
     createPasswordConfirm: "",
     createMessage: "",
     galleryView: false,
+    thumbnails: [],
+    galleryDisplayedUser: "",
   };
 
   login = () => {
@@ -234,8 +236,25 @@ class App extends Component {
   };
 
   galleryView = () => {
-    this.setState({ galleryView: true });
+    axios.get(`${URL}galleryLatest`).then((res) => {
+      this.setState({
+        thumbnails: res.data,
+        galleryView: true,
+        galleryDisplayedUser: "",
+      });
+    });
   };
+
+  galleryByUsername = (username) => {
+    axios.get(`${URL}galleryByUsername?username=${username}`).then((res) => {
+      this.setState({ thumbnails: res.data, galleryDisplayedUser: username });
+    });
+  };
+
+  submitLike = (pictureID) => {
+    axios.get(`${URL}submitLike?ID=${pictureID}`);
+  };
+
   pictureView = () => {
     this.setState({ galleryView: false });
   };
@@ -294,7 +313,14 @@ class App extends Component {
           logoutPanel={this.logoutPanel}
         />
         {this.state.galleryView ? (
-          <Gallery />
+          <Gallery
+            colors={this.state.colors}
+            galleryView={this.galleryView}
+            galleryDisplayedUser={this.state.galleryDisplayedUser}
+            galleryByUsername={this.galleryByUsername}
+            thumbnails={this.state.thumbnails}
+            submitLike={this.submitLike}
+          />
         ) : (
           <div className="containerWrapper">
             <Container
