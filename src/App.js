@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Helmet } from "react-helmet";
+import Head from "./components/Head";
 import axios from "axios";
 import Container from "./components/Container.jsx";
 import Pallette from "./components/Pallette.jsx";
@@ -13,10 +15,14 @@ import CreateSuccessPanel from "./components/CreateSuccessPanel.jsx";
 import Gallery from "./components/Gallery.jsx";
 import AboutPanel from "./components/AboutPanel.jsx";
 import LogoutPanel from "./components/LogoutPanel.jsx";
+import Footer from "./components/Footer.jsx";
+import ClearGridButton from "./components/ClearGridButton.jsx";
 
 import { URL } from "./utils/constants";
 
 import "./styles/style.css";
+import "./styles/800pxStyle.css";
+import ClearGridPanel from "./components/ClearGridPanel.jsx";
 
 class App extends Component {
   state = {
@@ -46,11 +52,13 @@ class App extends Component {
     overwritePanel: false,
     loadPanel: false,
     loadList: [],
+    likeList: [],
     deleteWindow: false,
     toBeDeleted: "",
     loginPanel: false,
     logoutPanel: false,
     aboutPanel: false,
+    clearPanel: false,
     loginUsername: "",
     loginPassword: "",
     loginError: "",
@@ -90,7 +98,8 @@ class App extends Component {
               loginError: "",
               currentUser: this.state.loginUsername,
               currentId: res.data.userId,
-              loadList: res.data.name,
+              loadList: [...new Set(res.data.name)],
+              likeList: [...new Set(res.data.likes)],
               loginPanel: false,
             });
       });
@@ -245,6 +254,26 @@ class App extends Component {
     });
   };
 
+  galleryOldest = () => {
+    axios.get(`${URL}galleryOldest`).then((res) => {
+      this.setState({
+        thumbnails: res.data,
+        galleryView: true,
+        galleryDisplayedUser: "",
+      });
+    });
+  };
+
+  galleryMostVotes = (timestamp = 0) => {
+    axios.get(`${URL}galleryMostVotes?timestamp=${timestamp}`).then((res) => {
+      this.setState({
+        thumbnails: res.data,
+        galleryView: true,
+        galleryDisplayedUser: "",
+      });
+    });
+  };
+
   galleryByUsername = (username) => {
     axios.get(`${URL}galleryByUsername?username=${username}`).then((res) => {
       this.setState({ thumbnails: res.data, galleryDisplayedUser: username });
@@ -252,7 +281,16 @@ class App extends Component {
   };
 
   submitLike = (pictureID) => {
-    axios.get(`${URL}submitLike?ID=${pictureID}`);
+    this.state.currentId
+      ? axios
+          .get(
+            `${URL}submitLike?pictureID=${pictureID}&userID=${this.state.currentId}`
+          )
+          .then(this.state.likeList.push(pictureID))
+      : this.setState({
+          loginPanel: true,
+          loginError: "First login to leave a like",
+        });
   };
 
   pictureView = () => {
@@ -278,6 +316,22 @@ class App extends Component {
       currentImageName: "",
       pixel: new Array(400).fill("white"),
       logoutPanel: false,
+      loadList: [],
+      likeList: [],
+    });
+  };
+
+  openClearPanel = () => {
+    this.state.clearPanel
+      ? this.setState({ clearPanel: false })
+      : this.setState({ clearPanel: true });
+  };
+
+  clearGrid = () => {
+    this.setState({
+      clearPanel: false,
+      pixel: new Array(400).fill("white"),
+      currentImageName: "",
     });
   };
 
@@ -301,6 +355,7 @@ class App extends Component {
   render() {
     return (
       <>
+        <Head />
         <Header
           currentUser={this.state.currentUser}
           login={this.login}
@@ -316,10 +371,13 @@ class App extends Component {
           <Gallery
             colors={this.state.colors}
             galleryView={this.galleryView}
+            galleryOldest={this.galleryOldest}
+            galleryMostVotes={this.galleryMostVotes}
             galleryDisplayedUser={this.state.galleryDisplayedUser}
             galleryByUsername={this.galleryByUsername}
             thumbnails={this.state.thumbnails}
             submitLike={this.submitLike}
+            likeList={this.state.likeList}
           />
         ) : (
           <div className="containerWrapper">
@@ -335,14 +393,10 @@ class App extends Component {
               changeColor={this.changeColor}
               activeColor={this.state.activeColor}
             />
+            <ClearGridButton openClearPanel={this.openClearPanel} />
           </div>
         )}
 
-        {this.state.currentUser ? (
-          <p>Logged in as {this.state.currentUser}</p>
-        ) : (
-          <p>Not logged in</p>
-        )}
         {this.state.createAccountPanel && (
           <CreateAccountPanel
             setCreateUsername={this.setCreateUsername}
@@ -403,6 +457,13 @@ class App extends Component {
         {this.state.logoutPanel && (
           <LogoutPanel logoutPanel={this.logoutPanel} logout={this.logout} />
         )}
+        {this.state.clearPanel && (
+          <ClearGridPanel
+            clearGrid={this.clearGrid}
+            openClearPanel={this.openClearPanel}
+          />
+        )}
+        <Footer currentUser={this.state.currentUser} />
       </>
     );
   }

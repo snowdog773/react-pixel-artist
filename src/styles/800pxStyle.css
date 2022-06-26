@@ -1,0 +1,36 @@
+@media (min-width: 800px) {
+  .hamburger {
+    display: none;
+  }
+  .dropdownMenuInvisible,
+  .dropdownMenuVisible {
+    position: static;
+
+    display: block;
+    width: 100%;
+    transform: translate3d(0, 0, 0);
+    transition: 0.5s;
+    padding: 10px;
+    background: rgb(0, 0, 0, 0.8);
+    border: 0;
+  }
+
+  .dropdownMenuVisible ul,
+  .dropdownMenuInvisible ul {
+    display: flex;
+  }
+
+  .dropdownMenuVisible li:hover,
+  .dropdownMenuInvisible li:hover {
+    background: #fff;
+    color: #222;
+    transition: 0.5s;
+    border-radius: 5px;
+  }
+
+  .dropdownMenuVisible li,
+  .dropdownMenuInvisible li {
+    padding: 0 20px;
+    transition: 0.5s;
+  }
+}

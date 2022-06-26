@@ -18,8 +18,10 @@ body {
 }
 
 .topBar {
+  position: sticky;
+  top: 0;
   width: 100%;
-  background: #000;
+  background: rgb(0, 0, 0, 0.8);
   color: #fff;
   text-align: right;
   margin: 0;
@@ -58,7 +60,7 @@ h1 > span {
   position: fixed;
   right: 0;
   display: block;
-  width: 50vw;
+  width: 30vw;
   transition: 0.5s;
   padding: 10px;
   background: rgb(0, 0, 0, 0.8);
@@ -67,11 +69,21 @@ h1 > span {
   border-bottom: 3px groove #fff;
 }
 
+.dropdownMenuVisible li {
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.dropdownMenuInvisible li {
+  cursor: pointer;
+  padding: 5px 0;
+}
+
 .dropdownMenuInvisible {
   position: fixed;
   right: 0;
   display: block;
-  width: 50vw;
+  width: 30vw;
   transform: translate3d(100vw, 0, 0);
   transition: 0.5s;
   padding: 10px;
@@ -168,6 +180,7 @@ p.alert {
 }
 
 .pixel {
+  cursor: crosshair;
   display: block;
   width: 10px;
   height: 10px;
@@ -187,22 +200,58 @@ p.alert {
 
 .activePaint {
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
   border-color: yellow;
   margin: 2px;
   border-radius: 30px;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
+  background-image: linear-gradient(
+      to bottom right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.5) 100%
+    ),
+    linear-gradient(
+      to top left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
 }
 
 .inactivePaint {
+  cursor: pointer;
   border-style: groove;
-  border-width: 2px;
+  border-width: 1px;
   border-color: #000;
   border-radius: 30px;
   margin: 2px;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
+  background-image: linear-gradient(
+      to bottom right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.5) 100%
+    ),
+    linear-gradient(
+      to top left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
+}
+
+.clearButton {
+  width: 80%;
+  background: #0000;
+  color: #fff;
+  margin: 5px auto 0;
+  border-radius: 5px;
+  border: solid 2px #fff;
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  background: #fff;
+  color: #000;
 }
 
 div.loadListItem {
@@ -239,6 +288,7 @@ div.closeButton {
   width: 5%;
   padding: 2px 5px;
   color: #fff;
+  cursor: pointer;
 }
 
 .galleryWrapper {
@@ -250,6 +300,17 @@ div.closeButton {
   justify-content: center;
 }
 
+.orderLinks {
+  font-size: 0.68rem;
+  display: flex;
+  justify-content: center;
+}
+
+.orderLinks > div {
+  padding: 0 3px;
+  cursor: pointer;
+}
+
 li.thumbnailWrapper {
   list-style: none;
   background-color: rgba(0, 0, 0, 0.3);
@@ -257,6 +318,10 @@ li.thumbnailWrapper {
   padding: 10px;
   margin: 10px;
   width: 150px;
+}
+
+.usernameLink {
+  cursor: pointer;
 }
 
 li.thumbnailWrapper h4 {
@@ -287,4 +352,41 @@ li.thumbnailWrapper p {
   height: 5px;
   margin: 0;
   padding: 0;
+}
+
+.likeWrapper {
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.8rem;
+  align-items: center;
+}
+
+.likeButton {
+  cursor: pointer;
+  background: #fff;
+  color: rgb(0, 0, 0);
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.likeButtonLiked {
+  cursor: default;
+  background: #0a0;
+  color: rgb(0, 0, 0);
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background: rgb(0, 0, 0, 0.8);
+}
+
+.footer span {
+  margin: 5px;
+  font-size: 0.6rem;
 }
