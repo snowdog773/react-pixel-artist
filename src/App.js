@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Helmet } from "react-helmet";
+
 import Head from "./components/Head";
 import axios from "axios";
 import Container from "./components/Container.jsx";
@@ -132,7 +132,6 @@ class App extends Component {
             password: this.state.createPassword,
           })
           .then((res) => {
-            console.log(res);
             res.data.errno === 1062
               ? this.setState({
                   createMessage:
@@ -318,6 +317,7 @@ class App extends Component {
       logoutPanel: false,
       loadList: [],
       likeList: [],
+      savePlaceholder: "",
     });
   };
 
@@ -332,6 +332,7 @@ class App extends Component {
       clearPanel: false,
       pixel: new Array(400).fill("white"),
       currentImageName: "",
+      savePlaceholder: "",
     });
   };
 
@@ -380,21 +381,23 @@ class App extends Component {
             likeList={this.state.likeList}
           />
         ) : (
-          <div className="containerWrapper">
-            <Container
-              pixel={this.state.pixel}
-              paint={this.paint}
-              mouseClicked={this.mouseClicked}
-              mouseReleased={this.mouseReleased}
-            />
-            <p>{this.state.currentImageName}</p>
-            <Pallette
-              colors={this.state.colors}
-              changeColor={this.changeColor}
-              activeColor={this.state.activeColor}
-            />
-            <ClearGridButton openClearPanel={this.openClearPanel} />
-          </div>
+          <>
+            <div className="containerWrapper">
+              <Container
+                pixel={this.state.pixel}
+                paint={this.paint}
+                mouseClicked={this.mouseClicked}
+                mouseReleased={this.mouseReleased}
+              />
+              <p>{this.state.currentImageName}</p>
+              <Pallette
+                colors={this.state.colors}
+                changeColor={this.changeColor}
+                activeColor={this.state.activeColor}
+              />
+              <ClearGridButton openClearPanel={this.openClearPanel} />
+            </div>
+          </>
         )}
 
         {this.state.createAccountPanel && (
