@@ -3,7 +3,10 @@ const LoadListItem = (props) => {
   return (
     <>
       <div className="loadListItem">
-        <div onClick={() => props.returnImage(props.listItem)}>
+        <div
+          className="loadFileName"
+          onClick={() => props.returnImage(props.listItem)}
+        >
           {props.listItem}
         </div>
         <div

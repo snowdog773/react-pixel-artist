@@ -55,7 +55,9 @@ class Gallery extends Component {
                     ID={e.ID}
                     votes={e.Votes}
                     submitLike={this.props.submitLike}
+                    rejectLike={this.props.rejectLike}
                     likeList={this.props.likeList}
+                    currentId={this.props.currentId}
                   />
                 </li>
               );

@@ -280,16 +280,18 @@ class App extends Component {
   };
 
   submitLike = (pictureID) => {
-    this.state.currentId
-      ? axios
-          .get(
-            `${URL}submitLike?pictureID=${pictureID}&userID=${this.state.currentId}`
-          )
-          .then(this.state.likeList.push(pictureID))
-      : this.setState({
-          loginPanel: true,
-          loginError: "First login to leave a like",
-        });
+    axios
+      .get(
+        `${URL}submitLike?pictureID=${pictureID}&userID=${this.state.currentId}`
+      )
+      .then(this.state.likeList.push(pictureID));
+  };
+
+  rejectLike = () => {
+    this.setState({
+      loginPanel: true,
+      loginError: "First login to leave a like",
+    });
   };
 
   pictureView = () => {
@@ -378,7 +380,9 @@ class App extends Component {
             galleryByUsername={this.galleryByUsername}
             thumbnails={this.state.thumbnails}
             submitLike={this.submitLike}
+            rejectLike={this.rejectLike}
             likeList={this.state.likeList}
+            currentId={this.state.currentId}
           />
         ) : (
           <>

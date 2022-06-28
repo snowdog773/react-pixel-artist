@@ -3,8 +3,12 @@ class Likes extends Component {
   state = { votes: this.props.votes };
 
   createLike = (ID) => {
-    this.props.submitLike(ID);
-    this.setState({ votes: this.state.votes + 1 });
+    if (this.props.currentId) {
+      this.props.submitLike(ID);
+      this.setState({ votes: this.state.votes + 1 });
+    } else {
+      this.props.rejectLike();
+    }
   };
 
   render() {
