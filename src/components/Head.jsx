@@ -72,6 +72,7 @@ const Head = () => {
         sizes="120x120"
         href="../meta-images/apple-touch-icon-120x120.png"
       />
+
       <link
         rel="apple-touch-icon-precomposed"
         sizes="76x76"

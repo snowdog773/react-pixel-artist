@@ -164,13 +164,17 @@ class App extends Component {
   savePicture = () => {
     const picture = [...this.state.pixel];
     const numbers = picture.map((e) => this.state.colors.indexOf(e));
-    numbers.join(" ");
+
+    const joined = numbers.join(",");
+    // const output = JSON.stringify(joined);
+
+    // numbers.replace("")
     this.state.loadList.includes(this.state.saveName)
       ? this.setState({ overwritePanel: true })
       : axios.post(`${URL}savePicture`, {
           userId: this.state.currentId,
           pictureName: this.state.saveName,
-          pictureData: numbers,
+          pictureData: joined,
         });
 
     const newLoadList = [...this.state.loadList];
@@ -186,11 +190,11 @@ class App extends Component {
   overwritePicture = () => {
     const picture = [...this.state.pixel];
     const numbers = picture.map((e) => this.state.colors.indexOf(e));
-    numbers.join(" ");
+    const joined = numbers.join(",");
     axios.post(`${URL}updatePicture`, {
       userId: this.state.currentId,
       pictureName: this.state.saveName,
-      pictureData: numbers,
+      pictureData: joined,
     });
 
     this.setState({ savePanel: false, overwritePanel: false });
@@ -359,6 +363,7 @@ class App extends Component {
     return (
       <>
         <Head />
+
         <Header
           currentUser={this.state.currentUser}
           login={this.login}
