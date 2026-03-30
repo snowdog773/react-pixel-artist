@@ -1,0 +1,11 @@
+services:
+  twenty-squared:
+    image: ghcr.io/${GITHUB_REPOSITORY}:latest
+    container_name: twenty-squared-app
+    restart: unless-stopped
+    networks:
+      - proxy-nw
+
+networks:
+  proxy-nw:
+    external: true

@@ -1,0 +1,61 @@
+name: Deploy 20 Squared
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Create the folder inside apps if it doesn't exist
+            mkdir -p ~/apps/20-squared
+            cd ~/apps/20-squared
+
+            # Generate the compose file specifically for this app
+            cat <<EOF > docker-compose.yml
+            services:
+              twenty-squared:
+                image: ghcr.io/${{ github.repository }}:latest
+                container_name: twenty-squared-app
+                restart: unless-stopped
+                networks:
+                  - proxy-nw
+            networks:
+              proxy-nw:
+                external: true
+            EOF
+
+            docker compose pull
+            docker compose up -d
