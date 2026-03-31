@@ -15,24 +15,24 @@ class Gallery extends Component {
           Gallery
         </h2>
         <div className="orderLinks">
-          <div onClick={this.props.galleryView}>Latest</div> |{" "}
-          <div onClick={this.props.galleryOldest}>Oldest</div> |{" "}
-          <div onClick={this.props.galleryMostVotes}>Most Votes</div> |{" "}
-          <div
+          <span onClick={this.props.galleryView}>Latest</span> |{" "}
+          <span onClick={this.props.galleryOldest}>Oldest</span> |{" "}
+          <span onClick={this.props.galleryMostVotes}>Most Votes</span> |{" "}
+          <span
             onClick={() =>
               this.props.galleryMostVotes(new Date().setHours(-168, 0, 0, 0))
             }
           >
             Most Votes This Week
-          </div>
+          </span>
           |{" "}
-          <div
+          <span
             onClick={() =>
               this.props.galleryMostVotes(new Date().setHours(0, 0, 0, 0))
             }
           >
             Most Votes Today
-          </div>
+          </span>
         </div>
 
         <ul className="galleryWrapper">

@@ -7,12 +7,18 @@ class Pixel extends Component {
       <div
         className="pixel"
         style={{ backgroundColor: this.props.color }}
-        onClick={() => this.props.paint(this.props.pos)}
-        // onTouchStart={() => this.props.paint(this.props.pos)}
-        // onMouseDown={this.props.mouseClicked}
-        // onMouseUp={this.props.mouseReleased}
-        // // onTouchStart={this.props.mouseClicked}
-        // onTouchEnd={this.props.mouseReleased}
+        // When the user first presses down:
+        onMouseDown={(e) => {
+          e.preventDefault(); // Prevents dragging the image
+          this.props.mouseClicked(); // Tell App.js mouse is active
+          this.props.paint(this.props.pos); // Paint this specific cell immediately
+        }}
+        // When the user slides into a new cell:
+        onMouseEnter={() => {
+          this.props.paint(this.props.pos); // App logic checks if mouseActive is true
+        }}
+        // Safety release:
+        onMouseUp={this.props.mouseReleased}
       ></div>
     );
   }

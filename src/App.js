@@ -286,7 +286,7 @@ class App extends Component {
   submitLike = (pictureID) => {
     axios
       .get(
-        `${URL}submitLike?pictureID=${pictureID}&userID=${this.state.currentId}`
+        `${URL}submitLike?pictureID=${pictureID}&userID=${this.state.currentId}`,
       )
       .then(this.state.likeList.push(pictureID));
   };
@@ -343,18 +343,33 @@ class App extends Component {
   };
 
   paint = (position) => {
-    const newPixel = [...this.state.pixel];
-    newPixel[position] = this.state.activeColor;
-    /* this.state.mouseActive && */ this.setState({ pixel: newPixel });
-    localStorage.setItem("current", JSON.stringify(this.state.pixel));
+    // Only paint if the mouse is held down
+    if (this.state.mouseActive) {
+      const newPixel = [...this.state.pixel];
+      newPixel[position] = this.state.activeColor;
+      this.setState({ pixel: newPixel });
+
+      // Suggestion: Debounce this or move to mouseReleased for better performance
+      localStorage.setItem("current", JSON.stringify(newPixel));
+    }
   };
 
   changeColor = (color) => {
     this.setState({ activeColor: color });
   };
 
-  // mouseClicked = () => this.setState({ mouseActive: true });
-  // mouseReleased = () => this.setState({ mouseActive: false });
+  mouseClicked = () => this.setState({ mouseActive: true });
+  mouseReleased = () => this.setState({ mouseActive: false });
+
+  componentDidMount() {
+    // Safety net: If the user lets go of the mouse anywhere in the window
+    window.addEventListener("mouseup", this.mouseReleased);
+  }
+
+  componentWillUnmount() {
+    // Clean up the listener when the component destroys
+    window.removeEventListener("mouseup", this.mouseReleased);
+  }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -362,120 +377,122 @@ class App extends Component {
   render() {
     return (
       <>
-        <Head />
+        <div onMouseUp={this.mouseReleased} onMouseLeave={this.mouseReleased}>
+          <Head />
 
-        <Header
-          currentUser={this.state.currentUser}
-          login={this.login}
-          createAccount={this.createAccount}
-          openSavePanel={this.openSavePanel}
-          openLoadPanel={this.openLoadPanel}
-          galleryView={this.galleryView}
-          pictureView={this.pictureView}
-          aboutPanel={this.aboutPanel}
-          logoutPanel={this.logoutPanel}
-        />
-        {this.state.galleryView ? (
-          <Gallery
-            colors={this.state.colors}
+          <Header
+            currentUser={this.state.currentUser}
+            login={this.login}
+            createAccount={this.createAccount}
+            openSavePanel={this.openSavePanel}
+            openLoadPanel={this.openLoadPanel}
             galleryView={this.galleryView}
-            galleryOldest={this.galleryOldest}
-            galleryMostVotes={this.galleryMostVotes}
-            galleryDisplayedUser={this.state.galleryDisplayedUser}
-            galleryByUsername={this.galleryByUsername}
-            thumbnails={this.state.thumbnails}
-            submitLike={this.submitLike}
-            rejectLike={this.rejectLike}
-            likeList={this.state.likeList}
-            currentId={this.state.currentId}
+            pictureView={this.pictureView}
+            aboutPanel={this.aboutPanel}
+            logoutPanel={this.logoutPanel}
           />
-        ) : (
-          <>
-            <div className="containerWrapper">
-              <Container
-                pixel={this.state.pixel}
-                paint={this.paint}
-                mouseClicked={this.mouseClicked}
-                mouseReleased={this.mouseReleased}
-              />
-              <p>{this.state.currentImageName}</p>
-              <Pallette
-                colors={this.state.colors}
-                changeColor={this.changeColor}
-                activeColor={this.state.activeColor}
-              />
-              <ClearGridButton openClearPanel={this.openClearPanel} />
-            </div>
-          </>
-        )}
+          {this.state.galleryView ? (
+            <Gallery
+              colors={this.state.colors}
+              galleryView={this.galleryView}
+              galleryOldest={this.galleryOldest}
+              galleryMostVotes={this.galleryMostVotes}
+              galleryDisplayedUser={this.state.galleryDisplayedUser}
+              galleryByUsername={this.galleryByUsername}
+              thumbnails={this.state.thumbnails}
+              submitLike={this.submitLike}
+              rejectLike={this.rejectLike}
+              likeList={this.state.likeList}
+              currentId={this.state.currentId}
+            />
+          ) : (
+            <>
+              <div className="containerWrapper">
+                <Container
+                  pixel={this.state.pixel}
+                  paint={this.paint}
+                  mouseClicked={this.mouseClicked}
+                  mouseReleased={this.mouseReleased}
+                />
+                <p>{this.state.currentImageName}</p>
+                <Pallette
+                  colors={this.state.colors}
+                  changeColor={this.changeColor}
+                  activeColor={this.state.activeColor}
+                />
+                <ClearGridButton openClearPanel={this.openClearPanel} />
+              </div>
+            </>
+          )}
 
-        {this.state.createAccountPanel && (
-          <CreateAccountPanel
-            setCreateUsername={this.setCreateUsername}
-            setCreatePassword={this.setCreatePassword}
-            setCreatePasswordConfirm={this.setCreatePasswordConfirm}
-            submitCreate={this.submitCreate}
-            createMessage={this.state.createMessage}
-            closeWindow={this.closeWindow}
-          />
-        )}
-        {this.state.loginPanel && (
-          <LoginPanel
-            setLoginUsername={this.setLoginUsername}
-            setLoginPassword={this.setLoginPassword}
-            submitLogin={this.submitLogin}
-            loginError={this.state.loginError}
-            closeWindow={this.closeWindow}
-          />
-        )}
-        {this.state.savePanel && (
-          <SavePanel
-            savePicture={this.savePicture}
-            setSaveName={this.setSaveName}
-            closeWindow={this.closeWindow}
-            saveName={this.state.saveName}
-            savePlaceholder={this.state.savePlaceholder}
-            currentImageName={this.state.currentImageName}
-          />
-        )}
+          {this.state.createAccountPanel && (
+            <CreateAccountPanel
+              setCreateUsername={this.setCreateUsername}
+              setCreatePassword={this.setCreatePassword}
+              setCreatePasswordConfirm={this.setCreatePasswordConfirm}
+              submitCreate={this.submitCreate}
+              createMessage={this.state.createMessage}
+              closeWindow={this.closeWindow}
+            />
+          )}
+          {this.state.loginPanel && (
+            <LoginPanel
+              setLoginUsername={this.setLoginUsername}
+              setLoginPassword={this.setLoginPassword}
+              submitLogin={this.submitLogin}
+              loginError={this.state.loginError}
+              closeWindow={this.closeWindow}
+            />
+          )}
+          {this.state.savePanel && (
+            <SavePanel
+              savePicture={this.savePicture}
+              setSaveName={this.setSaveName}
+              closeWindow={this.closeWindow}
+              saveName={this.state.saveName}
+              savePlaceholder={this.state.savePlaceholder}
+              currentImageName={this.state.currentImageName}
+            />
+          )}
 
-        {this.state.overwritePanel && (
-          <OverwritePanel
-            overwritePicture={this.overwritePicture}
-            closeOverwriteWindow={this.closeOverwriteWindow}
-          />
-        )}
+          {this.state.overwritePanel && (
+            <OverwritePanel
+              overwritePicture={this.overwritePicture}
+              closeOverwriteWindow={this.closeOverwriteWindow}
+            />
+          )}
 
-        {this.state.loadPanel && (
-          <LoadPanel
-            loadList={this.state.loadList}
-            returnImage={this.returnImage}
-            deleteWindow={this.deleteWindow}
-            closeWindow={this.closeWindow}
-          />
-        )}
+          {this.state.loadPanel && (
+            <LoadPanel
+              loadList={this.state.loadList}
+              returnImage={this.returnImage}
+              deleteWindow={this.deleteWindow}
+              closeWindow={this.closeWindow}
+            />
+          )}
 
-        {this.state.deleteWindow && (
-          <DeletePanel
-            deletePicture={this.deletePicture}
-            closeDeleteWindow={this.closeDeleteWindow}
-            toBeDeleted={this.state.toBeDeleted}
-          />
-        )}
-        {this.state.createSuccessPanel && (
-          <CreateSuccessPanel closeWindow={this.closeWindow} />
-        )}
-        {this.state.aboutPanel && <AboutPanel aboutPanel={this.aboutPanel} />}
-        {this.state.logoutPanel && (
-          <LogoutPanel logoutPanel={this.logoutPanel} logout={this.logout} />
-        )}
-        {this.state.clearPanel && (
-          <ClearGridPanel
-            clearGrid={this.clearGrid}
-            openClearPanel={this.openClearPanel}
-          />
-        )}
-        <Footer currentUser={this.state.currentUser} />
+          {this.state.deleteWindow && (
+            <DeletePanel
+              deletePicture={this.deletePicture}
+              closeDeleteWindow={this.closeDeleteWindow}
+              toBeDeleted={this.state.toBeDeleted}
+            />
+          )}
+          {this.state.createSuccessPanel && (
+            <CreateSuccessPanel closeWindow={this.closeWindow} />
+          )}
+          {this.state.aboutPanel && <AboutPanel aboutPanel={this.aboutPanel} />}
+          {this.state.logoutPanel && (
+            <LogoutPanel logoutPanel={this.logoutPanel} logout={this.logout} />
+          )}
+          {this.state.clearPanel && (
+            <ClearGridPanel
+              clearGrid={this.clearGrid}
+              openClearPanel={this.openClearPanel}
+            />
+          )}
+          <Footer currentUser={this.state.currentUser} />
+        </div>
       </>
     );
   }
