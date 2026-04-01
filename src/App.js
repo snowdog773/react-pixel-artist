@@ -342,15 +342,17 @@ class App extends Component {
     });
   };
 
-  paint = (position) => {
-    // Only paint if the mouse is held down
-    if (this.state.mouseActive) {
+  paint = (position, force = false) => {
+    // Paint if mouse is active OR if we are forcing it (on initial click)
+    if (this.state.mouseActive || force) {
       const newPixel = [...this.state.pixel];
-      newPixel[position] = this.state.activeColor;
-      this.setState({ pixel: newPixel });
 
-      // Suggestion: Debounce this or move to mouseReleased for better performance
-      localStorage.setItem("current", JSON.stringify(newPixel));
+      // Optimization: Only update state if the color actually changes
+      if (newPixel[position] !== this.state.activeColor) {
+        newPixel[position] = this.state.activeColor;
+        this.setState({ pixel: newPixel });
+        // localStorage.setItem("current", JSON.stringify(newPixel));
+      }
     }
   };
 
@@ -359,7 +361,10 @@ class App extends Component {
   };
 
   mouseClicked = () => this.setState({ mouseActive: true });
-  mouseReleased = () => this.setState({ mouseActive: false });
+  mouseReleased = () => {
+    this.setState({ mouseActive: false });
+    localStorage.setItem("current", JSON.stringify(this.state.pixel));
+  };
 
   componentDidMount() {
     // Safety net: If the user lets go of the mouse anywhere in the window
